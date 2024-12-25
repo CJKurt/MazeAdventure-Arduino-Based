@@ -1,0 +1,22 @@
+#define red 22
+#define white 24
+
+void setup()
+{
+  pinMode(red,OUTPUT);
+  pinMode(white,OUTPUT);
+  Serial.begin(9600);
+}
+
+bool press()
+{
+  int a=digitalRead(red);
+  int b=digitalRead(white);
+  Serial.println(a);
+  Serial.println(b);
+}
+
+void loop()
+{
+  press();
+}

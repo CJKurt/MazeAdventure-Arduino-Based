@@ -1,0 +1,74 @@
+int rows[] = {2, 3, 4, 5, 6, 7, 8, 9};  // 行引脚（正极）
+int cols[] = {10, 11, 12, 13, 14, 15, 16, 17}; // 列引脚（负极）
+
+void setup() {
+    // 初始化串口通信
+    Serial.begin(9600);
+
+    // 设置所有行和列引脚为输出模式
+    for (int i = 0; i < 8; i++) {
+        pinMode(rows[i], OUTPUT);
+        pinMode(cols[i], OUTPUT);
+    }
+
+    // 初始化所有行和列为非激活状态
+    for (int i = 0; i < 8; i++) {
+        digitalWrite(rows[i], LOW);  // 行引脚初始为LOW（关闭）
+        digitalWrite(cols[i], HIGH); // 列引脚初始为HIGH（关闭）
+    }
+
+    Serial.println("初始化完成");
+}
+
+void loop() {
+    // 逐行激活检查
+    for (int currentRow = 0; currentRow < 8; currentRow++) {
+        // 激活当前行
+        for (int i = 0; i < 8; i++) {
+            if (i == currentRow) {
+                digitalWrite(rows[i], HIGH); // 当前行供电
+            } else {
+                digitalWrite(rows[i], LOW);  // 其他行关闭
+            }
+        }
+
+        // 激活所有列（点亮当前行的所有LED）
+        for (int j = 0; j < 8; j++) {
+            digitalWrite(cols[j], LOW); // 列接地，点亮LED
+        }
+
+        // 打印当前行的状态
+        printPinStates(currentRow);
+
+        // 保持点亮状态3秒，便于观察
+        delay(1000);
+
+        // 关闭当前行的列
+        for (int j = 0; j < 8; j++) {
+            digitalWrite(cols[j], HIGH); // 关闭所有列
+        }
+    }
+}
+
+// 打印当前行状态的函数
+void printPinStates(int currentRow) {
+    Serial.print("当前激活行：行引脚 ");
+    Serial.print(rows[currentRow]);
+    Serial.println(" (HIGH - 供电)");
+
+    Serial.println("==== 行引脚状态 ====");
+    for (int i = 0; i < 8; i++) {
+        Serial.print("行引脚 ");
+        Serial.print(rows[i]);
+        Serial.print(": ");
+        Serial.println(digitalRead(rows[i]) == HIGH ? "HIGH (供电)" : "LOW (关闭)");
+    }
+
+    Serial.println("==== 列引脚状态 ====");
+    for (int j = 0; j < 8; j++) {
+        Serial.print("列引脚 ");
+        Serial.print(cols[j]);
+        Serial.print(": ");
+        Serial.println(digitalRead(cols[j]) == LOW ? "LOW (接地)" : "HIGH (断开)");
+    }
+}

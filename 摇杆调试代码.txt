@@ -1,0 +1,41 @@
+// 定义摇杆引脚
+#define VRX A0 // X轴模拟输出
+#define VRY A1 // Y轴模拟输出
+#define SW  31  // 按键开关
+
+void setup() {
+    // 初始化串口通信
+    Serial.begin(9600);
+
+    // 配置引脚模式
+    pinMode(VRX, INPUT);  // X轴输入
+    pinMode(VRY, INPUT);  // Y轴输入
+    pinMode(SW, INPUT_PULLUP); // SW按键（带内部上拉电阻）
+
+    Serial.println("PS2 摇杆调试初始化完成");
+}
+
+void loop() {
+    // 读取 X 和 Y 轴的模拟值（0 ~ 1023）
+    int xValue = analogRead(VRX);
+    int yValue = analogRead(VRY);
+
+    // 读取 SW 按键状态（LOW = 按下，HIGH = 松开）
+    int buttonState = digitalRead(SW);
+
+    // 打印输出值
+    Serial.print("X轴: ");
+    Serial.print(xValue);
+    Serial.print(" | Y轴: ");
+    Serial.print(yValue);
+    Serial.print(" | 按键: ");
+    Serial.println(buttonState == LOW ? "按下" : "松开");
+
+    // 延时50ms，便于观察数据
+    delay(50);
+}
+
+
+VRX	X轴电压输出	A0（模拟输入引脚）
+VRY	Y轴电压输出	A1（模拟输入引脚）
+SW	按键开关	D31（数字输入引脚）
